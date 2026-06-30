@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create account — ARMS</title>
+<link href="/static/vendor/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="/static/vendor/bootstrap-icons/bootstrap-icons.css">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<div class="auth-shell">
+  <aside class="auth-aside d-none d-lg-flex">
+    <a href="index.html" class="arms-brand position-relative">
+      <span class="arms-brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 3L2 8l10 5 10-5-10-5z" stroke="#C9A227" stroke-width="1.4" stroke-linejoin="round"/>
+          <path d="M6 11.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5" stroke="#C9A227" stroke-width="1.4" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <span class="arms-brand-text">
+        <span class="name" style="color:#fff;">ARMS</span>
+        <span class="tag">Academic Records</span>
+      </span>
+    </a>
+
+    <div class="position-relative">
+      <p class="auth-quote">"Setting up a department used to take a week of spreadsheets. Now it's a form."</p>
+      <ul class="list-unstyled small mt-4" style="color:rgba(255,255,255,0.7)">
+        <li class="mb-2"><i class="bi bi-check-circle me-2" style="color:var(--gold)"></i>Role-based dashboards from day one</li>
+        <li class="mb-2"><i class="bi bi-check-circle me-2" style="color:var(--gold)"></i>Automatic GPA &amp; CGPA computation</li>
+        <li class="mb-2"><i class="bi bi-check-circle me-2" style="color:var(--gold)"></i>Audit-logged, verifiable records</li>
+      </ul>
+    </div>
+
+    <div class="small position-relative" style="color:rgba(255,255,255,0.45)">&copy; 2026 ARMS · Secured with JWT &amp; role-based access control</div>
+  </aside>
+
+  <main class="auth-main py-5">
+    <div class="auth-card">
+      <div class="d-lg-none arms-brand mb-4 justify-content-center">
+        <span class="arms-brand-mark">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 3L2 8l10 5 10-5-10-5z" stroke="#C9A227" stroke-width="1.4" stroke-linejoin="round"/>
+            <path d="M6 11.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5" stroke="#C9A227" stroke-width="1.4" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span class="arms-brand-text"><span class="name">ARMS</span></span>
+      </div>
+
+      <span class="eyebrow">Get started</span>
+      <h1 class="h3 mt-2 mb-1">Create your account</h1>
+      <p class="text-secondary mb-4">Tell us who you are — your dashboard is tailored to your role.</p>
+
+      {% if error %}
+      <div class="alert alert-danger py-2 mb-3" role="alert" style="font-size:0.85rem; border-radius:6px;">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ error }}
+      </div>
+      {% endif %}
+
+      <form method="POST" action="{% url 'register' %}" novalidate>
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label d-block">I am a...</label>
+          <div class="role-pill-group" role="radiogroup" aria-label="Account role">
+            <label class="role-pill active">
+              <input type="radio" name="role" value="student" checked>
+              <i class="bi bi-mortarboard d-block mb-1"></i>Student
+            </label>
+            <label class="role-pill">
+              <input type="radio" name="role" value="lecturer">
+              <i class="bi bi-person-workspace d-block mb-1"></i>Lecturer
+            </label>
+            <label class="role-pill">
+              <input type="radio" name="role" value="registrar">
+              <i class="bi bi-building d-block mb-1"></i>Registrar
+            </label>
+            <label class="role-pill">
+              <input type="radio" name="role" value="admin">
+              <i class="bi bi-shield-lock d-block mb-1"></i>Admin
+            </label>
+          </div>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-6">
+            <label for="firstName" class="form-label">First name</label>
+            <input type="text" id="firstName" name="firstName" class="form-control" placeholder="Adaeze" required>
+          </div>
+          <div class="col-6">
+            <label for="lastName" class="form-label">Last name</label>
+            <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Okoro" required>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="regId" class="form-label">Matric / Staff ID</label>
+          <input type="text" id="regId" name="regId" class="form-control" placeholder="e.g. CSC/2022/0417" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="regEmail" class="form-label">University email</label>
+          <input type="email" id="regEmail" name="regEmail" class="form-control" placeholder="you@university.edu" required>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-6">
+            <label for="regPassword" class="form-label">Password</label>
+            <input type="password" id="regPassword" name="regPassword" class="form-control" placeholder="Min. 8 characters" required>
+          </div>
+          <div class="col-6">
+            <label for="regPassword2" class="form-label">Confirm password</label>
+            <input type="password" id="regPassword2" name="regPassword2" class="form-control" placeholder="Repeat password" required>
+          </div>
+        </div>
+
+        <div class="form-check mb-4">
+          <input class="form-check-input" type="checkbox" id="agreeTerms" required>
+          <label class="form-check-label small" for="agreeTerms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+        </div>
+
+        <button type="submit" class="btn btn-arms-primary w-100">Create account</button>
+      </form>
+
+      <p class="text-center small text-secondary mt-4 mb-0">Already have an account? <a href="{% url 'login' %}" class="fw-semibold">Sign in</a></p>
+    </div>
+  </main>
+</div>
+
+<script src="/static/vendor/bootstrap.bundle.min.js"></script>
+<script src="/static/js/main.js"></script>
+</body>
+</html>

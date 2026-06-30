@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registrar Dashboard — ARMS</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body class="dash-body">
+
+<div class="dash-shell">
+  <aside class="dash-sidebar">
+    <a href="index.html" class="side-brand">
+      <span class="side-mark">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 3L2 8l10 5 10-5-10-5z" stroke="#C9A227" stroke-width="1.4" stroke-linejoin="round"/>
+          <path d="M6 11.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5" stroke="#C9A227" stroke-width="1.4" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <span><span class="name d-block">ARMS</span><span class="tag">Registrar Portal</span></span>
+    </a>
+
+    <div class="side-section-label">Overview</div>
+    <a href="dashboard-registrar.html" class="nav-link active"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+
+    <div class="side-section-label">Records</div>
+    <a href="#" class="nav-link"><i class="bi bi-people"></i> Student Records</a>
+    <a href="#" class="nav-link"><i class="bi bi-journal-bookmark"></i> Course Management</a>
+    <a href="#" class="nav-link"><i class="bi bi-pencil-square"></i> Registration Oversight</a>
+    <a href="#" class="nav-link"><i class="bi bi-file-earmark-pdf"></i> Transcript Requests <span class="nav-badge">9</span></a>
+    <a href="#" class="nav-link"><i class="bi bi-patch-check"></i> Record Verification</a>
+
+    <div class="side-section-label">System</div>
+    <a href="#" class="nav-link"><i class="bi bi-clock-history"></i> Audit Trail</a>
+    <a href="#" class="nav-link"><i class="bi bi-bar-chart-line"></i> Analytics</a>
+    <a href="#" class="nav-link"><i class="bi bi-gear"></i> Settings</a>
+
+    <div class="side-footer">
+      <a href="login.html" class="nav-link px-0"><i class="bi bi-box-arrow-left"></i> Sign out</a>
+    </div>
+  </aside>
+
+  <div class="dash-overlay"></div>
+
+  <div class="dash-main">
+    <header class="dash-topbar">
+      <button class="sidebar-toggle"><i class="bi bi-list fs-5"></i></button>
+      <div class="dash-search"><i class="bi bi-search"></i><input type="text" placeholder="Search by matric no., name…" data-table-search="recordsTable"></div>
+      <div class="topbar-right">
+        <div class="dropdown">
+          <button class="icon-btn" data-bs-toggle="dropdown"><i class="bi bi-bell"></i><span class="dot"></span></button>
+          <div class="dropdown-menu dropdown-menu-end notif-dropdown p-0">
+            <div class="px-3 py-2 fw-semibold small border-bottom" style="border-color:var(--line)!important;">Notifications</div>
+            <div class="notif-item"><span class="dot-unread"></span><div><div class="notif-title">9 transcript requests pending</div><div class="notif-sub">Oldest waiting 18 hours</div></div></div>
+            <div class="notif-item"><span class="dot-unread"></span><div><div class="notif-title">New student record flagged</div><div class="notif-sub">Duplicate matric number detected</div></div></div>
+          </div>
+        </div>
+        <div class="dropdown">
+          <div class="profile-trigger" data-bs-toggle="dropdown">
+            <div class="profile-avatar">FB</div>
+            <div class="d-none d-md-block"><div class="pname">Funmilayo Bello</div><div class="prole">Deputy Registrar</div></div>
+            <i class="bi bi-chevron-down small d-none d-md-block"></i>
+          </div>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>My Profile</a></li>
+            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Settings</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="login.html"><i class="bi bi-box-arrow-left me-2"></i>Sign out</a></li>
+          </ul>
+        </div>
+      </div>
+    </header>
+
+    <main class="dash-content">
+      <div class="page-title-row">
+        <div>
+          <div class="breadcrumb-mono mb-1">Registrar / Dashboard</div>
+          <h1>Academic Registry overview</h1>
+          <div class="sub">2025/2026 session · 2nd semester</div>
+        </div>
+        <div class="d-flex gap-2">
+          <a href="#" class="btn-arms-outline btn-sm"><i class="bi bi-plus-lg me-1"></i> New record</a>
+          <a href="#" class="btn-arms-primary btn-sm"><i class="bi bi-file-earmark-pdf me-1"></i> Process requests</a>
+        </div>
+      </div>
+
+      <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+          <div class="dstat-card"><div class="dstat-icon tone-navy"><i class="bi bi-people"></i></div>
+            <div><div class="num">18,400</div><div class="label">Total students</div><div class="trend up"><i class="bi bi-arrow-up-short"></i>2.4% this term</div></div></div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="dstat-card"><div class="dstat-icon tone-gold"><i class="bi bi-journal-bookmark"></i></div>
+            <div><div class="num">640</div><div class="label">Active courses</div></div></div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="dstat-card"><div class="dstat-icon tone-success"><i class="bi bi-file-earmark-pdf"></i></div>
+            <div><div class="num">52,300</div><div class="label">Transcripts issued</div></div></div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="dstat-card"><div class="dstat-icon tone-info"><i class="bi bi-hourglass-split"></i></div>
+            <div><div class="num">9</div><div class="label">Pending requests</div><div class="trend down"><i class="bi bi-arrow-down-short"></i>Needs review</div></div></div>
+        </div>
+      </div>
+
+      <div class="row g-3 mb-4">
+        <div class="col-lg-8">
+          <div class="panel h-100">
+            <div class="panel-header"><h2>Enrollment trend</h2><a href="#" class="panel-link">Full analytics</a></div>
+            <div class="chart-placeholder">
+              <span class="chart-placeholder-label">New enrollments / month</span>
+              <div class="bar" data-height="40"></div>
+              <div class="bar" data-height="55"></div>
+              <div class="bar" data-height="48"></div>
+              <div class="bar" data-height="70"></div>
+              <div class="bar" data-height="62"></div>
+              <div class="bar" data-height="85"></div>
+              <div class="bar" data-height="76"></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="panel h-100">
+            <div class="panel-header"><h2>Standing breakdown</h2></div>
+            <div class="donut-placeholder"><div class="donut-center"><div class="num">75%</div><div class="cap">Good standing</div></div></div>
+            <div class="d-flex justify-content-center gap-3 mt-3 small text-secondary flex-wrap">
+              <span><i class="bi bi-square-fill" style="color:var(--ink)"></i> Good</span>
+              <span><i class="bi bi-square-fill" style="color:var(--gold)"></i> Probation</span>
+              <span><i class="bi bi-square-fill" style="color:var(--line)"></i> Withdrawn</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel mb-4">
+        <div class="panel-header">
+          <h2>Student records</h2>
+          <a href="#" class="panel-link">View all 18,400</a>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-arms" id="recordsTable">
+            <thead><tr><th></th><th>Matric No.</th><th>Name</th><th>Programme</th><th>Level</th><th>CGPA</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td><div class="row-avatar">AO</div></td><td class="cell-id">CSC/2022/0417</td><td>Adaeze Okoro</td><td>B.Sc Computer Science</td><td>300</td><td class="cell-id">4.62</td><td><span class="badge-status success">Active</span></td></tr>
+              <tr><td><div class="row-avatar">CA</div></td><td class="cell-id">ECO/2021/0982</td><td>Chiamaka Aniagu</td><td>B.Sc Economics</td><td>400</td><td class="cell-id">3.95</td><td><span class="badge-status success">Active</span></td></tr>
+              <tr><td><div class="row-avatar">IM</div></td><td class="cell-id">PHY/2023/0214</td><td>Ibrahim Musa</td><td>B.Sc Physics</td><td>200</td><td class="cell-id">2.41</td><td><span class="badge-status warning">Probation</span></td></tr>
+              <tr><td><div class="row-avatar">KE</div></td><td class="cell-id">CSC/2020/0099</td><td>Kelechi Eze</td><td>B.Sc Computer Science</td><td>500</td><td class="cell-id">4.10</td><td><span class="badge-status info">Graduating</span></td></tr>
+              <tr><td><div class="row-avatar">RG</div></td><td class="cell-id">LAW/2022/0356</td><td>Ruth Garba</td><td>LL.B Law</td><td>300</td><td class="cell-id">—</td><td><span class="badge-status danger">Withdrawn</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-lg-7">
+          <div class="panel">
+            <div class="panel-header"><h2>Transcript &amp; verification requests</h2><a href="#" class="panel-link">View queue</a></div>
+            <div class="table-responsive">
+              <table class="table table-arms">
+                <thead><tr><th>Ref.</th><th>Student</th><th>Type</th><th>Status</th></tr></thead>
+                <tbody>
+                  <tr><td class="cell-id">TR-7E29-4401</td><td>Adaeze Okoro</td><td>Official transcript</td><td><span class="badge-status success">Issued</span></td></tr>
+                  <tr><td class="cell-id">TR-9C12-7782</td><td>Kelechi Eze</td><td>Verification request</td><td><span class="badge-status warning">In review</span></td></tr>
+                  <tr><td class="cell-id">TR-4B81-1190</td><td>Ibrahim Musa</td><td>Official transcript</td><td><span class="badge-status neutral">Queued</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <div class="panel">
+            <div class="panel-header"><h2>Audit trail</h2><a href="#" class="panel-link">Full log</a></div>
+            <div class="activity-item">
+              <div class="activity-icon" style="background:var(--success-tint); color:var(--success);"><i class="bi bi-pencil"></i></div>
+              <div><div class="activity-text">F. Bello updated CSC/2022/0417 academic standing</div><div class="activity-time">10 min ago</div></div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon" style="background:var(--gold-tint); color:var(--gold-deep);"><i class="bi bi-file-earmark-pdf"></i></div>
+              <div><div class="activity-text">Transcript TR-7E29-4401 issued</div><div class="activity-time">2 hours ago</div></div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon" style="background:var(--info-tint); color:var(--info);"><i class="bi bi-person-plus"></i></div>
+              <div><div class="activity-text">New record created for ENG/2026/0044</div><div class="activity-time">Yesterday</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lecturer Dashboard — ARMS</title>
+<link href="/static/vendor/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="/static/vendor/bootstrap-icons/bootstrap-icons.css">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/style.css">
+<link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+<body class="dash-body">
+
+<div class="dash-shell">
+  <aside class="dash-sidebar">
+    <a href="{% url 'index' %}" class="side-brand">
+      <span class="side-mark">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 3L2 8l10 5 10-5-10-5z" stroke="#C9A227" stroke-width="1.4" stroke-linejoin="round"/>
+          <path d="M6 11.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5" stroke="#C9A227" stroke-width="1.4" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <span><span class="name d-block">ARMS</span><span class="tag">Lecturer Portal</span></span>
+    </a>
+
+    <div class="side-section-label">Overview</div>
+    <a href="?tab=dashboard" class="nav-link {% if active_tab == 'dashboard' %}active{% endif %}" data-tooltip="Dashboard"><i class="bi bi-grid-1x2"></i> <span class="nav-text">Dashboard</span></a>
+    <a href="?tab=profile" class="nav-link {% if active_tab == 'profile' %}active{% endif %}" data-tooltip="My Profile"><i class="bi bi-person-vcard"></i> <span class="nav-text">My Profile</span></a>
+
+    <div class="side-section-label">Teaching</div>
+    <a href="?tab=courses" class="nav-link {% if active_tab == 'courses' %}active{% endif %}" data-tooltip="My Courses"><i class="bi bi-journal-bookmark"></i> <span class="nav-text">My Courses</span></a>
+    <a href="?tab=rosters" class="nav-link {% if active_tab == 'rosters' %}active{% endif %}" data-tooltip="Class Rosters"><i class="bi bi-people"></i> <span class="nav-text">Class Rosters</span></a>
+    <a href="?tab=results" class="nav-link {% if active_tab == 'results' %}active{% endif %}" data-tooltip="Result Entry"><i class="bi bi-pencil-square"></i> <span class="nav-text">Result Entry</span> <span class="nav-badge">{{ pending_count }}</span></a>
+
+    <div class="side-section-label">Account</div>
+    <a href="?tab=settings" class="nav-link {% if active_tab == 'settings' %}active{% endif %}" data-tooltip="Settings"><i class="bi bi-gear"></i> <span class="nav-text">Settings</span></a>
+    <a href="#" class="nav-link sidebar-collapse-btn" data-tooltip="Collapse Sidebar">
+      <i class="bi bi-chevron-left collapse-icon"></i> <span class="nav-text">Collapse Sidebar</span>
+    </a>
+
+    <div class="side-footer">
+      <a href="{% url 'logout' %}" class="nav-link px-0" data-tooltip="Sign out"><i class="bi bi-box-arrow-left"></i> <span class="nav-text">Sign out</span></a>
+    </div>
+  </aside>
+
+  <div class="dash-overlay"></div>
+
+  <div class="dash-main">
+    <header class="dash-topbar">
+      <button class="sidebar-toggle"><i class="bi bi-list fs-5"></i></button>
+      <div class="dash-search"><i class="bi bi-search"></i><input type="text" placeholder="Search students, courses…"></div>
+      <div class="topbar-right">
+        <div class="dropdown">
+          <button class="icon-btn" data-bs-toggle="dropdown"><i class="bi bi-bell"></i><span class="dot"></span></button>
+          <div class="dropdown-menu dropdown-menu-end notif-dropdown p-0">
+            <div class="px-3 py-2 fw-semibold small border-bottom" style="border-color:var(--line)!important;">Notifications</div>
+            <div class="notif-item"><span class="dot-unread"></span><div><div class="notif-title">Result submission deadline</div><div class="notif-sub">CSC 301 scores due in 2 days</div></div></div>
+            <div class="notif-item"><span class="dot-unread"></span><div><div class="notif-title">New registration</div><div class="notif-sub">12 students registered for CSC 313</div></div></div>
+          </div>
+        </div>
+        <div class="dropdown">
+          <div class="profile-trigger" data-bs-toggle="dropdown">
+            <div class="profile-avatar">{{ lecturer.first_name|slice:":1" }}{{ lecturer.last_name|slice:":1" }}</div>
+            <div class="d-none d-md-block"><div class="pname">{{ lecturer.first_name }} {{ lecturer.last_name }}</div><div class="prole">Lecturer · {{ lecturer.department.code }}</div></div>
+            <i class="bi bi-chevron-down small d-none d-md-block"></i>
+          </div>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="?tab=profile"><i class="bi bi-person me-2"></i>My Profile</a></li>
+            <li><a class="dropdown-item" href="?tab=settings"><i class="bi bi-gear me-2"></i>Settings</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="bi bi-box-arrow-left me-2"></i>Sign out</a></li>
+          </ul>
+        </div>
+      </div>
+    </header>
+
+    <main class="dash-content">
+
+      <!-- ======= FLASH ALERTS ======= -->
+      {% if success == 'profile' %}<div class="alert alert-success alert-dismissible fade show py-2 mb-3" role="alert"><i class="bi bi-check-circle me-2"></i>Profile updated successfully.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>{% endif %}
+      {% if success == 'password' %}<div class="alert alert-success alert-dismissible fade show py-2 mb-3" role="alert"><i class="bi bi-check-circle me-2"></i>Password changed successfully.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>{% endif %}
+      {% if error == 'wrong_password' %}<div class="alert alert-danger alert-dismissible fade show py-2 mb-3" role="alert"><i class="bi bi-exclamation-circle me-2"></i>Current password is incorrect.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>{% endif %}
+      {% if error == 'mismatch' %}<div class="alert alert-danger alert-dismissible fade show py-2 mb-3" role="alert"><i class="bi bi-exclamation-circle me-2"></i>New passwords do not match.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>{% endif %}
+      {% if error == 'too_short' %}<div class="alert alert-danger alert-dismissible fade show py-2 mb-3" role="alert"><i class="bi bi-exclamation-circle me-2"></i>Password must be at least 8 characters.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>{% endif %}
+
+      <!-- ======= TAB: DASHBOARD ======= -->
+      {% if active_tab == 'dashboard' %}
+      <div class="page-title-row">
+        <div>
+          <div class="breadcrumb-mono mb-1">Lecturer / Dashboard</div>
+          <h1>Good morning, {{ lecturer.first_name }}</h1>
+          <div class="sub">Department of {{ lecturer.department.name }} · 2025/2026, 2nd semester</div>
+        </div>
+      </div>
+
+      <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+          <div class="dstat-card"><div class="dstat-icon tone-navy"><i class="bi bi-journal-bookmark"></i></div>
+            <div><div class="num">{{ courses_count }}</div><div class="label">Courses this semester</div></div></div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="dstat-card"><div class="dstat-icon tone-gold"><i class="bi bi-people"></i></div>
+            <div><div class="num">{{ total_enrolled }}</div><div class="label">Enrolled students</div></div></div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="dstat-card"><div class="dstat-icon tone-success"><i class="bi bi-check2-circle"></i></div>
+            <div><div class="num">{{ finalized_count }}</div><div class="label">Results finalized</div></div></div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="dstat-card"><div class="dstat-icon tone-info"><i class="bi bi-hourglass-split"></i></div>
+            <div><div class="num">{{ pending_count }}</div><div class="label">Pending result entry</div></div></div>
+        </div>
+      </div>
+
+      <div class="row g-3 mb-4">
+        <div class="col-lg-7">
+          <div class="panel h-100">
+            <div class="panel-header"><h2>Grade distribution</h2><a href="?tab=results" class="panel-link">Result entry</a></div>
+            <div class="chart-placeholder">
+              <span class="chart-placeholder-label">Score distribution</span>
+              <div class="bar" data-height="20"></div>
+              <div class="bar" data-height="45"></div>
+              <div class="bar" data-height="78"></div>
+              <div class="bar" data-height="92"></div>
+              <div class="bar" data-height="58"></div>
+              <div class="bar" data-height="30"></div>
+              <div class="bar" data-height="12"></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <div class="panel h-100">
+            <div class="panel-header"><h2>Submission status</h2></div>
+            <div class="donut-placeholder"><div class="donut-center"><div class="num">{% if courses_count > 0 %}{{ finalized_count }}/{{ courses_count }}{% else %}—{% endif %}</div><div class="cap">Finalized</div></div></div>
+            <div class="d-flex justify-content-center gap-3 mt-3 small text-secondary">
+              <span><i class="bi bi-square-fill" style="color:var(--ink)"></i> Finalized</span>
+              <span><i class="bi bi-square-fill" style="color:var(--gold)"></i> Draft</span>
+              <span><i class="bi bi-square-fill" style="color:var(--line)"></i> Not started</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <h2>Result entry queue</h2>
+          <a href="?tab=results" class="panel-link">Open full entry</a>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-arms">
+            <thead><tr><th>Code</th><th>Course title</th><th>Students</th><th>Average score</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              {% for item in result_queue %}
+              <tr>
+                <td class="cell-id">{{ item.course.code }}</td>
+                <td>{{ item.course.title }}</td>
+                <td>{{ item.students_count }}</td>
+                <td>{{ item.avg_score }}</td>
+                <td>
+                  {% if item.status == 'Finalized' %}<span class="badge-status success">Finalized</span>
+                  {% elif item.status == 'Draft' %}<span class="badge-status warning">Draft</span>
+                  {% else %}<span class="badge-status danger">Not started</span>{% endif %}
+                </td>
+                <td><a href="?tab=results" class="btn btn-link p-0 fw-semibold text-decoration-none small">{% if item.status == 'Finalized' %}View{% elif item.status == 'Draft' %}Continue{% else %}Start{% endif %}</a></td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="6" class="text-center text-secondary py-3">No courses assigned this semester.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- ======= TAB: PROFILE ======= -->
+      {% if active_tab == 'profile' %}
+      <div class="page-title-row">
+        <div>
+          <div class="breadcrumb-mono mb-1">Lecturer / My Profile</div>
+          <h1>Profile information</h1>
+          <div class="sub">Update your personal details</div>
+        </div>
+      </div>
+      <div class="row g-4">
+        <div class="col-lg-8">
+          <div class="panel">
+            <div class="panel-header"><h2>Personal details</h2></div>
+            <form method="POST" action="?tab=profile">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="profile_update">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">First Name</label>
+                  <input type="text" name="firstName" class="form-control" value="{{ lecturer.first_name }}" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Last Name</label>
+                  <input type="text" name="lastName" class="form-control" value="{{ lecturer.last_name }}" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Email Address</label>
+                  <input type="email" name="email" class="form-control" value="{{ lecturer.email }}">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Staff ID</label>
+                  <input type="text" class="form-control" value="{{ lecturer.reg_id }}" disabled>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Department</label>
+                  <input type="text" class="form-control" value="{{ lecturer.department.name|default:'—' }}" disabled>
+                </div>
+              </div>
+              <div class="mt-4"><button type="submit" class="btn btn-arms-primary btn-sm">Save changes</button></div>
+            </form>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="panel text-center">
+            <div class="profile-avatar mx-auto mb-3" style="width:72px;height:72px;font-size:1.6rem;">{{ lecturer.first_name|slice:":1" }}{{ lecturer.last_name|slice:":1" }}</div>
+            <div class="fw-semibold fs-6">{{ lecturer.first_name }} {{ lecturer.last_name }}</div>
+            <div class="small text-secondary mb-3">{{ lecturer.reg_id }}</div>
+            <div class="d-flex flex-column gap-2 text-start small">
+              <div class="d-flex justify-content-between"><span class="text-secondary">Role</span><span class="fw-semibold">Lecturer</span></div>
+              <div class="d-flex justify-content-between"><span class="text-secondary">Dept</span><span class="fw-semibold">{{ lecturer.department.code|default:"—" }}</span></div>
+              <div class="d-flex justify-content-between"><span class="text-secondary">Courses</span><span class="fw-semibold">{{ courses_count }}</span></div>
+              <div class="d-flex justify-content-between"><span class="text-secondary">Students</span><span class="fw-semibold">{{ total_enrolled }}</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- ======= TAB: MY COURSES ======= -->
+      {% if active_tab == 'courses' %}
+      <div class="page-title-row">
+        <div>
+          <div class="breadcrumb-mono mb-1">Lecturer / My Courses</div>
+          <h1>My courses</h1>
+          <div class="sub">2025/2026 session — assigned courses</div>
+        </div>
+      </div>
+      <div class="row g-3">
+        {% for item in result_queue %}
+        <div class="col-md-6 col-lg-4">
+          <div class="panel h-100">
+            <div class="d-flex align-items-start justify-content-between mb-3">
+              <div>
+                <div class="cell-id fw-semibold fs-6">{{ item.course.code }}</div>
+                <div class="fw-semibold mt-1">{{ item.course.title }}</div>
+                <div class="small text-secondary">{{ item.course.units }} units · {{ item.course.semester }}</div>
+              </div>
+              {% if item.status == 'Finalized' %}<span class="badge-status success">Finalized</span>
+              {% elif item.status == 'Draft' %}<span class="badge-status warning">Draft</span>
+              {% else %}<span class="badge-status danger">Pending</span>{% endif %}
+            </div>
+            <div class="d-flex gap-3 small mb-3">
+              <div><div class="cell-id fw-bold">{{ item.students_count }}</div><div class="text-secondary">Students</div></div>
+              <div><div class="cell-id fw-bold">{{ item.avg_score }}</div><div class="text-secondary">Avg. score</div></div>
+            </div>
+            <div class="progress-arms mb-3">
+              <div class="bar-fill" data-progress="{% if item.students_count > 0 and item.status == 'Finalized' %}100{% elif item.status == 'Draft' %}50{% else %}0{% endif %}"></div>
+            </div>
+            <a href="?tab=results" class="btn btn-arms-outline btn-sm w-100">Go to Result Entry</a>
+          </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+          <div class="panel text-center py-5 text-secondary">
+            <i class="bi bi-journal-bookmark fs-1 d-block mb-3 opacity-25"></i>
+            No courses assigned this semester.
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- ======= TAB: CLASS ROSTERS ======= -->
+      {% if active_tab == 'rosters' %}
+      <div class="page-title-row">
+        <div>
+          <div class="breadcrumb-mono mb-1">Lecturer / Class Rosters</div>
+          <h1>Class rosters</h1>
+          <div class="sub">Student enrollment lists per course</div>
+        </div>
+      </div>
+      {% for item in result_queue %}
+      <div class="panel mb-4">
+        <div class="panel-header">
+          <h2>{{ item.course.code }} — {{ item.course.title }}</h2>
+          <span class="small text-secondary">{{ item.students_count }} student{{ item.students_count|pluralize }}</span>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-arms">
+            <thead><tr><th></th><th>Matric No.</th><th>Name</th><th>Score</th><th>Grade</th><th>Status</th></tr></thead>
+            <tbody>
+              {% for enrollment in item.enrollments %}
+              <tr>
+                <td><div class="row-avatar">{{ enrollment.student.first_name|slice:":1" }}{{ enrollment.student.last_name|slice:":1" }}</div></td>
+                <td class="cell-id">{{ enrollment.student.reg_id }}</td>
+                <td>{{ enrollment.student.first_name }} {{ enrollment.student.last_name }}</td>
+                <td>{% if enrollment.score is not None %}{{ enrollment.score }}%{% else %}<span class="text-secondary">Not graded</span>{% endif %}</td>
+                <td class="cell-id fw-semibold">{{ enrollment.grade|default:"—" }}</td>
+                <td>{% if enrollment.score is not None %}<span class="badge-status success">Graded</span>{% else %}<span class="badge-status warning">Pending</span>{% endif %}</td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="6" class="text-center text-secondary py-3">No students enrolled.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% empty %}
+      <div class="panel text-center py-5 text-secondary"><i class="bi bi-people fs-1 d-block mb-3 opacity-25"></i>No courses assigned.</div>
+      {% endfor %}
+      {% endif %}
+
+      <!-- ======= TAB: RESULT ENTRY ======= -->
+      {% if active_tab == 'results' %}
+      <div class="page-title-row">
+        <div>
+          <div class="breadcrumb-mono mb-1">Lecturer / Result Entry</div>
+          <h1>Result entry</h1>
+          <div class="sub">{{ pending_count }} course{{ pending_count|pluralize }} pending · enter scores and save</div>
+        </div>
+      </div>
+      {% for item in result_queue %}
+      <div class="panel mb-4">
+        <div class="panel-header">
+          <h2>{{ item.course.code }} — {{ item.course.title }}</h2>
+          {% if item.status == 'Finalized' %}<span class="badge-status success">Finalized</span>
+          {% elif item.status == 'Draft' %}<span class="badge-status warning">Draft</span>
+          {% else %}<span class="badge-status danger">Not started</span>{% endif %}
+        </div>
+        <p class="small text-secondary mb-3">Input student score (0–100) and click Save. The system computes grade and grade points automatically.</p>
+        <div class="table-responsive">
+          <table class="table table-arms">
+            <thead><tr><th>Matric No.</th><th>Name</th><th>Score</th><th>Grade</th><th>Action</th></tr></thead>
+            <tbody>
+              {% for enrollment in item.enrollments %}
+              <form id="grade-form-{{ enrollment.id }}" method="POST" action="{% url 'update_grade' %}">
+                {% csrf_token %}
+                <input type="hidden" name="enrollmentId" value="{{ enrollment.id }}">
+              </form>
+              <tr>
+                <td class="cell-id">{{ enrollment.student.reg_id }}</td>
+                <td>{{ enrollment.student.first_name }} {{ enrollment.student.last_name }}</td>
+                <td><input type="number" name="score" min="0" max="100" class="form-control form-control-sm" value="{{ enrollment.score|default:'' }}" style="max-width:90px;background:var(--bg);border:1px solid var(--line);color:var(--ink);" form="grade-form-{{ enrollment.id }}" required></td>
+                <td class="cell-id fw-semibold">{{ enrollment.grade|default:"—" }}</td>
+                <td><button type="submit" form="grade-form-{{ enrollment.id }}" class="btn btn-arms-primary btn-sm py-1 px-3">Save</button></td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="5" class="text-center text-secondary py-3">No students registered.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% empty %}
+      <div class="panel text-center py-5 text-secondary"><i class="bi bi-pencil-square fs-1 d-block mb-3 opacity-25"></i>No courses assigned this semester.</div>
+      {% endfor %}
+      {% endif %}
+
+      <!-- ======= TAB: SETTINGS ======= -->
+      {% if active_tab == 'settings' %}
+      <div class="page-title-row">
+        <div>
+          <div class="breadcrumb-mono mb-1">Lecturer / Settings</div>
+          <h1>Account settings</h1>
+          <div class="sub">Manage your security preferences</div>
+        </div>
+      </div>
+      <div class="row g-4">
+        <div class="col-lg-6">
+          <div class="panel">
+            <div class="panel-header"><h2>Change password</h2></div>
+            <form method="POST" action="?tab=settings">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="change_password">
+              <div class="mb-3">
+                <label class="form-label small fw-semibold">Current password</label>
+                <input type="password" name="oldPassword" class="form-control" required placeholder="Enter current password">
+              </div>
+              <div class="mb-3">
+                <label class="form-label small fw-semibold">New password</label>
+                <input type="password" name="newPassword" class="form-control" required placeholder="Minimum 8 characters">
+              </div>
+              <div class="mb-4">
+                <label class="form-label small fw-semibold">Confirm new password</label>
+                <input type="password" name="confirmPassword" class="form-control" required placeholder="Re-enter new password">
+              </div>
+              <button type="submit" class="btn btn-arms-primary btn-sm">Update password</button>
+            </form>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="panel">
+            <div class="panel-header"><h2>Account info</h2></div>
+            <div class="d-flex flex-column gap-2 small">
+              <div class="d-flex justify-content-between py-2 border-bottom" style="border-color:var(--line)!important;"><span class="text-secondary">Username</span><span class="cell-id">{{ lecturer.username }}</span></div>
+              <div class="d-flex justify-content-between py-2 border-bottom" style="border-color:var(--line)!important;"><span class="text-secondary">Email</span><span>{{ lecturer.email }}</span></div>
+              <div class="d-flex justify-content-between py-2 border-bottom" style="border-color:var(--line)!important;"><span class="text-secondary">Department</span><span class="fw-semibold">{{ lecturer.department.name|default:"—" }}</span></div>
+              <div class="d-flex justify-content-between py-2"><span class="text-secondary">Role</span><span class="badge-status neutral">Lecturer</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+    </main>
+  </div>
+</div>
+
+<script src="/static/vendor/bootstrap.bundle.min.js"></script>
+<script src="/static/js/dashboard.js"></script>
+</body>
+</html>

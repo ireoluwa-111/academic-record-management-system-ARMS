@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Dashboard — ARMS</title>
+<link href="/static/vendor/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="/static/vendor/bootstrap-icons/bootstrap-icons.css">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/style.css">
+<link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+<body class="dash-body">
+
+<div class="dash-shell">
+
+  <!-- ============================== SIDEBAR ============================== -->
+  <aside class="dash-sidebar">
+    <a href="{% url 'index' %}" class="side-brand">
+      <span class="side-mark">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 3L2 8l10 5 10-5-10-5z" stroke="#C9A227" stroke-width="1.4" stroke-linejoin="round"/>
+          <path d="M6 11.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5" stroke="#C9A227" stroke-width="1.4" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <span><span class="name d-block">ARMS</span><span class="tag">Student Portal</span></span>
+    </a>
+
+    <div class="side-section-label">Overview</div>
+    <a href="?tab=dashboard" class="nav-link {% if active_tab == 'dashboard' %}active{% endif %}" data-tooltip="Dashboard"><i class="bi bi-grid-1x2"></i> <span class="nav-text">Dashboard</span></a>
+    <a href="?tab=profile" class="nav-link {% if active_tab == 'profile' %}active{% endif %}" data-tooltip="My Profile"><i class="bi bi-person-vcard"></i> <span class="nav-text">My Profile</span></a>
+
+    <div class="side-section-label">Academics</div>
+    <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#registerCourseModal" data-tooltip="Course Registration"><i class="bi bi-pencil-square"></i> <span class="nav-text">Course Registration</span></a>
+    <a href="?tab=courses" class="nav-link {% if active_tab == 'courses' %}active{% endif %}" data-tooltip="My Courses"><i class="bi bi-journal-text"></i> <span class="nav-text">My Courses</span></a>
+    <a href="?tab=results" class="nav-link {% if active_tab == 'results' %}active{% endif %}" data-tooltip="Results &amp; GPA"><i class="bi bi-bar-chart-line"></i> <span class="nav-text">Results &amp; GPA</span></a>
+    <a href="?tab=transcript" class="nav-link {% if active_tab == 'transcript' %}active{% endif %}" data-tooltip="Transcript"><i class="bi bi-file-earmark-pdf"></i> <span class="nav-text">Transcript</span> <span class="nav-badge">PDF</span></a>
+
+    <div class="side-section-label">Account</div>
+    <a href="?tab=notifications" class="nav-link {% if active_tab == 'notifications' %}active{% endif %}" data-tooltip="Notifications"><i class="bi bi-bell"></i> <span class="nav-text">Notifications</span></a>
+    <a href="?tab=settings" class="nav-link {% if active_tab == 'settings' %}active{% endif %}" data-tooltip="Settings"><i class="bi bi-gear"></i> <span class="nav-text">Settings</span></a>
+    <a href="#" class="nav-link sidebar-collapse-btn" data-tooltip="Collapse Sidebar">
+      <i class="bi bi-chevron-left collapse-icon"></i> <span class="nav-text">Collapse Sidebar</span>
+    </a>
+
+    <div class="side-footer">
+      <a href="{% url 'logout' %}" class="nav-link px-0" data-tooltip="Sign out"><i class="bi bi-box-arrow-left"></i> <span class="nav-text">Sign out</span></a>
+    </div>
+  </aside>
+
+  <div class="dash-overlay"></div>
+
+  <!-- ============================== MAIN ============================== -->
+  <div class="dash-main">
+    <header class="dash-topbar">
+      <button class="sidebar-toggle"><i class="bi bi-list fs-5"></i></button>
+      <div class="dash-search">
+        <i class="bi bi-search"></i>
+        <input type="text" placeholder="Search courses, results…">
+      </div>
+      <div class="topbar-right">
+        <div class="dropdown">
+          <button class="icon-btn" data-bs-toggle="dropdown"><i class="bi bi-bell"></i><span class="dot"></span></button>
+          <div class="dropdown-menu dropdown-menu-end notif-dropdown p-0">
+            <div class="px-3 py-2 fw-semibold small border-bottom" style="border-color:var(--line)!important;">Notifications</div>
+            <div class="notif-item"><span class="dot-unread"></span><div><div class="notif-title">Result published</div><div class="notif-sub">CSC 305 — Database Systems · 2nd Semester</div></div></div>
+            <div class="notif-item"><span class="dot-unread"></span><div><div class="notif-title">Registration window opens</div><div class="notif-sub">2026/2027 — Harmattan semester · Opens Jul 1</div></div></div>
+            <div class="notif-item"><div><div class="notif-title">Transcript request approved</div><div class="notif-sub">Ref TR-7E29-4401 is ready to download</div></div></div>
+          </div>
+        </div>
+        <div class="dropdown">
+          <div class="profile-trigger" data-bs-toggle="dropdown">
+            <div class="profile-avatar">{{ student.first_name|slice:":1" }}{{ student.last_name|slice:":1" }}</div>
+            <div class="d-none d-md-block">
+              <div class="pname">{{ student.first_name }} {{ student.last_name }}</div>
+              <div class="prole">Student · {{ student.reg_id }}</div>
+            </div>
+            <i class="bi bi-chevron-down small d-none d-md-block"></i>
+          </div>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="?tab=profile"><i class="bi bi-person me-2"></i>My Profile</a></li>
+            <li><a class="dropdown-item" href="?tab=settings"><i class="bi bi-gear me-2"></i>Settings</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="bi bi-box-arrow-left me-2"></i>Sign out</a></li>
+          </ul>
+        </div>
+      </div>
+    </header>
+
+    <main class="dash-content">
+
+      <!-- ======= FLASH ALERTS ======= -->
+      {% if success == 'profile' %}<div class="alert alert-success alert-dismissible fade show py-2 mb-3" role="alert"><i class="bi bi-check-circle me-2"></i>Profile updated successfully.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>{% endif %}
+      {% if success == 'password' %}<div class="alert alert-success alert-dismissible fade show py-2 mb-3" role="alert"><i class="bi bi-check-circle me-2"></i>Password changed successfully.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>{% endif %}
+      {% if success == 'requested' %}<div class="alert alert-info alert-dismissible fade show py-2 mb-3" role="alert"><i class="bi bi-info-circle me-2"></i>Transcript request submitted. The registrar will process it shortly.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>{% endif %}
+      {% if error == 'wrong_password' %}<div class="alert alert-danger alert-dismissible fade show py-2 mb-3" role="alert"><i class="bi bi-exclamation-circle me-2"></i>Current password is incorrect.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>{% endif %}
+      {% if error == 'mismatch' %}<div class="alert alert-danger alert-dismissible fade show py-2 mb-3" role="alert"><i class="bi bi-exclamation-circle me-2"></i>New passwords do not match.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>{% endif %}
+      {% if error == 'too_short' %}<div class="alert alert-danger alert-dismissible fade show py-2 mb-3" role="alert"><i class="bi bi-exclamation-circle me-2"></i>Password must be at least 8 characters.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>{% endif %}
+
+      <!-- ======= TAB: DASHBOARD ======= -->
+      {% if active_tab == 'dashboard' %}
+      <div class="page-title-row">
+        <div>
+          <div class="breadcrumb-mono mb-1">Student / Dashboard</div>
+          <h1>Welcome back, {{ student.first_name }}</h1>
+          <div class="sub">{{ student.level }} Level · {{ student.programme }} · {{ student.session }} session</div>
+        </div>
+        <div class="d-flex gap-2">
+          {% if approved_transcript %}
+          <a href="{% url 'view_transcript' student.id %}" target="_blank" class="btn btn-arms-primary btn-sm"><i class="bi bi-file-earmark-pdf me-1"></i> View transcript</a>
+          {% else %}
+          <button type="button" class="btn btn-arms-outline btn-sm" data-bs-toggle="modal" data-bs-target="#registerCourseModal"><i class="bi bi-pencil-square me-1"></i> Register courses</button>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+          <div class="dstat-card">
+            <div class="dstat-icon tone-navy"><i class="bi bi-bar-chart-line"></i></div>
+            <div><div class="num">{{ cgpa|floatformat:2 }}</div><div class="label">Cumulative GPA</div><div class="trend up"><i class="bi bi-arrow-up-short"></i>Active standing</div></div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="dstat-card">
+            <div class="dstat-icon tone-gold"><i class="bi bi-journal-text"></i></div>
+            <div><div class="num">{{ current_enrollments.count }}</div><div class="label">Registered courses</div><div class="trend">{{ current_registered_units }} units</div></div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="dstat-card">
+            <div class="dstat-icon tone-success"><i class="bi bi-check2-circle"></i></div>
+            <div><div class="num">{{ total_units_completed }}</div><div class="label">Units completed</div><div class="trend up"><i class="bi bi-arrow-up-short"></i>of 162 required</div></div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="dstat-card">
+            <div class="dstat-icon tone-info"><i class="bi bi-patch-check"></i></div>
+            <div><div class="num">{{ standing }}</div><div class="label">Academic standing</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-3 mb-4">
+        <div class="col-lg-8">
+          <div class="panel h-100">
+            <div class="panel-header">
+              <h2>GPA trend by semester</h2>
+              <a href="?tab=results" class="panel-link">View results</a>
+            </div>
+            <div class="chart-placeholder">
+              <span class="chart-placeholder-label">GPA (0–5.0 scale)</span>
+              <div class="bar" data-height="62"></div>
+              <div class="bar" data-height="70"></div>
+              <div class="bar" data-height="66"></div>
+              <div class="bar" data-height="78"></div>
+              <div class="bar" data-height="84"></div>
+              <div class="bar" data-height="80"></div>
+              <div class="bar" data-height="92"></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="panel h-100 d-flex flex-column align-items-center justify-content-center text-center">
+            <div class="gpa-ring" data-value="{{ cgpa_percent }}">
+              <svg width="92" height="92" viewBox="0 0 92 92">
+                <circle cx="46" cy="46" r="40" fill="none" stroke="var(--line)" stroke-width="8"/>
+                <circle class="ring-progress" cx="46" cy="46" r="40" fill="none" stroke="var(--gold)" stroke-width="8" stroke-linecap="round"/>
+              </svg>
+              <div class="gpa-val">{{ cgpa|floatformat:2 }}</div>
+            </div>
+            <div class="mt-3 fw-semibold" style="color:var(--ink)">Current CGPA</div>
+            <div class="small text-secondary">{{ standing }} band</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-lg-8">
+          <div class="panel">
+            <div class="panel-header">
+              <h2>Registered courses — {{ student.session }} 2nd Semester</h2>
+              <button type="button" class="btn btn-link panel-link p-0 border-0 align-baseline" data-bs-toggle="modal" data-bs-target="#registerCourseModal">Manage registration</button>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-arms">
+                <thead><tr><th>Code</th><th>Course title</th><th>Units</th><th>Lecturer</th><th>Status</th></tr></thead>
+                <tbody>
+                  {% for enrollment in current_enrollments %}
+                  <tr>
+                    <td class="cell-id">{{ enrollment.course.code }}</td>
+                    <td>{{ enrollment.course.title }}</td>
+                    <td>{{ enrollment.course.units }}</td>
+                    <td>{{ enrollment.course.lecturer.first_name }} {{ enrollment.course.lecturer.last_name|default:"—" }}</td>
+                    <td>
+                      {% if enrollment.status == 'Enrolled' %}
+                        <span class="badge-status success">Enrolled</span>
+                      {% else %}
+                        <span class="badge-status warning">Pending approval</span>
+                      {% endif %}
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <tr><td colspan="5" class="text-center text-secondary py-3">No registered courses for this semester. Click 'Manage registration' to enroll.</td></tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="panel">
+            <div class="panel-header"><h2>Recent activity</h2></div>
+            {% for log in recent_activities %}
+            <div class="activity-item">
+              <div class="activity-icon" style="background:var(--info-tint); color:var(--info);"><i class="bi bi-clock-history"></i></div>
+              <div>
+                <div class="activity-text">{{ log.action }}</div>
+                <div class="activity-time">{{ log.timestamp|timesince }} ago</div>
+              </div>
+            </div>
+            {% empty %}
+            <div class="small text-secondary text-center py-4">No recent activity logs.</div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- ======= TAB: PROFILE ======= -->
+      {% if active_tab == 'profile' %}
+      <div class="page-title-row">
+        <div>
+          <div class="breadcrumb-mono mb-1">Student / My Profile</div>
+          <h1>Profile information</h1>
+          <div class="sub">Update your personal details and academic information</div>
+        </div>
+      </div>
+      <div class="row g-4">
+        <div class="col-lg-8">
+          <div class="panel">
+            <div class="panel-header"><h2>Personal details</h2></div>
+            <form method="POST" action="?tab=profile">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="profile_update">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">First Name</label>
+                  <input type="text" name="firstName" class="form-control" value="{{ student.first_name }}" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Last Name</label>
+                  <input type="text" name="lastName" class="form-control" value="{{ student.last_name }}" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Email Address</label>
+                  <input type="email" name="email" class="form-control" value="{{ student.email }}">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Matric Number</label>
+                  <input type="text" class="form-control" value="{{ student.reg_id }}" disabled>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Programme</label>
+                  <input type="text" name="programme" class="form-control" value="{{ student.programme|default:'' }}" placeholder="e.g. B.Sc Computer Science">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Department</label>
+                  <input type="text" class="form-control" value="{{ student.department.name|default:'—' }}" disabled>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Level</label>
+                  <input type="text" class="form-control" value="{{ student.level }}" disabled>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Session</label>
+                  <input type="text" class="form-control" value="{{ student.session }}" disabled>
+                </div>
+              </div>
+              <div class="mt-4">
+                <button type="submit" class="btn btn-arms-primary btn-sm">Save changes</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="panel text-center">
+            <div class="profile-avatar mx-auto mb-3" style="width:72px;height:72px;font-size:1.6rem;">{{ student.first_name|slice:":1" }}{{ student.last_name|slice:":1" }}</div>
+            <div class="fw-semibold fs-6">{{ student.first_name }} {{ student.last_name }}</div>
+            <div class="small text-secondary mb-3">{{ student.reg_id }}</div>
+            <div class="d-flex flex-column gap-2 text-start small">
+              <div class="d-flex justify-content-between"><span class="text-secondary">Role</span><span class="fw-semibold">Student</span></div>
+              <div class="d-flex justify-content-between"><span class="text-secondary">Status</span><span class="badge-status {% if student.status == 'Active' %}success{% elif student.status == 'Probation' %}warning{% else %}danger{% endif %}">{{ student.status }}</span></div>
+              <div class="d-flex justify-content-between"><span class="text-secondary">CGPA</span><span class="fw-semibold">{{ cgpa|floatformat:2 }}</span></div>
+              <div class="d-flex justify-content-between"><span class="text-secondary">Standing</span><span class="fw-semibold">{{ standing }}</span></div>
+            </div>
+            <hr>
+            <a href="{% url 'view_transcript' student.id %}" target="_blank" class="btn btn-arms-outline btn-sm w-100"><i class="bi bi-file-earmark-pdf me-1"></i>View full transcript</a>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- ======= TAB: MY COURSES ======= -->
+      {% if active_tab == 'courses' %}
+      <div class="page-title-row">
+        <div>
+          <div class="breadcrumb-mono mb-1">Student / My Courses</div>
+          <h1>Enrolled courses</h1>
+          <div class="sub">All sessions and semesters</div>
+        </div>
+        <button type="button" class="btn btn-arms-primary btn-sm" data-bs-toggle="modal" data-bs-target="#registerCourseModal"><i class="bi bi-plus-lg me-1"></i> Register new courses</button>
+      </div>
+      <div class="panel">
+        <div class="table-responsive">
+          <table class="table table-arms" id="coursesTable">
+            <thead><tr><th>Code</th><th>Course title</th><th>Units</th><th>Session</th><th>Semester</th><th>Score</th><th>Grade</th><th>Status</th></tr></thead>
+            <tbody>
+              {% for e in all_enrollments %}
+              <tr>
+                <td class="cell-id">{{ e.course.code }}</td>
+                <td>{{ e.course.title }}</td>
+                <td>{{ e.course.units }}</td>
+                <td>{{ e.session }}</td>
+                <td>{{ e.semester }}</td>
+                <td>{% if e.score is not None %}{{ e.score }}%{% else %}<span class="text-secondary">—</span>{% endif %}</td>
+                <td class="cell-id fw-semibold">{% if e.grade %}{{ e.grade }}{% else %}<span class="text-secondary">—</span>{% endif %}</td>
+                <td>
+                  {% if e.status == 'Enrolled' %}
+                    {% if e.score is not None %}<span class="badge-status success">Graded</span>
+                    {% else %}<span class="badge-status neutral">Enrolled</span>{% endif %}
+                  {% else %}
+                    <span class="badge-status warning">Pending approval</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="8" class="text-center text-secondary py-4">No courses registered yet. Use the 'Register new courses' button above.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- ======= TAB: RESULTS & GPA ======= -->
+      {% if active_tab == 'results' %}
+      <div class="page-title-row">
+        <div>
+          <div class="breadcrumb-mono mb-1">Student / Results &amp; GPA</div>
+          <h1>Academic results</h1>
+          <div class="sub">Semester-by-semester GPA breakdown</div>
+        </div>
+        <div class="dstat-card" style="min-width:160px;">
+          <div class="dstat-icon tone-navy"><i class="bi bi-bar-chart-line"></i></div>
+          <div><div class="num">{{ cgpa|floatformat:2 }}</div><div class="label">CGPA</div></div>
+        </div>
+      </div>
+
+      {% for sem in results_semesters %}
+      <div class="panel mb-3">
+        <div class="panel-header">
+          <h2>{{ sem.session }} — {{ sem.semester }}</h2>
+          <span class="badge-status {% if sem.gpa >= 4.5 %}success{% elif sem.gpa >= 3.0 %}info{% elif sem.gpa >= 2.0 %}warning{% else %}danger{% endif %}">GPA: {{ sem.gpa|floatformat:2 }}</span>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-arms">
+            <thead><tr><th>Code</th><th>Course title</th><th>Units</th><th>Score</th><th>Grade</th><th>Points</th></tr></thead>
+            <tbody>
+              {% for e in all_enrollments %}
+              {% if e.session == sem.session and e.semester == sem.semester and e.status == 'Enrolled' and e.score is not None %}
+              <tr>
+                <td class="cell-id">{{ e.course.code }}</td>
+                <td>{{ e.course.title }}</td>
+                <td>{{ e.course.units }}</td>
+                <td>{{ e.score }}%</td>
+                <td class="cell-id fw-semibold">{{ e.grade }}</td>
+                <td>{{ e.course.units }} × {{ e.grade_points }} = {{ e.course.units|floatformat:0 }} GP</td>
+              </tr>
+              {% endif %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% empty %}
+      <div class="panel text-center py-5 text-secondary">
+        <i class="bi bi-bar-chart-line fs-1 d-block mb-3 opacity-25"></i>
+        No graded results yet. Results will appear here once your lecturers publish scores.
+      </div>
+      {% endfor %}
+      {% endif %}
+
+      <!-- ======= TAB: TRANSCRIPT ======= -->
+      {% if active_tab == 'transcript' %}
+      <div class="page-title-row">
+        <div>
+          <div class="breadcrumb-mono mb-1">Student / Transcript</div>
+          <h1>Official transcript</h1>
+          <div class="sub">Request or download your academic transcript</div>
+        </div>
+      </div>
+      <div class="row g-4">
+        <div class="col-lg-6">
+          <div class="panel">
+            <div class="panel-header"><h2>Transcript status</h2></div>
+            {% if approved_transcript %}
+            <div class="d-flex align-items-center gap-3 mb-4 p-3" style="background:var(--success-tint);border-radius:var(--radius-md);">
+              <i class="bi bi-check-circle-fill fs-4" style="color:var(--success);"></i>
+              <div>
+                <div class="fw-semibold" style="color:var(--success);">Transcript approved</div>
+                <div class="small text-secondary">Your official transcript is ready to view and download.</div>
+              </div>
+            </div>
+            <a href="{% url 'view_transcript' student.id %}" target="_blank" class="btn btn-arms-primary btn-sm w-100"><i class="bi bi-file-earmark-pdf me-2"></i>View &amp; Print Transcript</a>
+            {% elif pending_transcript %}
+            <div class="d-flex align-items-center gap-3 mb-4 p-3" style="background:var(--gold-tint);border-radius:var(--radius-md);">
+              <i class="bi bi-hourglass-split fs-4" style="color:var(--gold-deep);"></i>
+              <div>
+                <div class="fw-semibold" style="color:var(--gold-deep);">Request pending</div>
+                <div class="small text-secondary">Your transcript request is awaiting registrar approval.</div>
+              </div>
+            </div>
+            <button class="btn btn-arms-outline btn-sm w-100" disabled>Request already submitted</button>
+            {% else %}
+            <p class="small text-secondary mb-4">You haven't requested your official transcript yet. Submit a request and the registrar will process it.</p>
+            <form method="POST" action="?tab=transcript">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="request_transcript">
+              <button type="submit" class="btn btn-arms-primary btn-sm w-100"><i class="bi bi-file-earmark-arrow-up me-2"></i>Request Transcript</button>
+            </form>
+            {% endif %}
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="panel">
+            <div class="panel-header"><h2>Academic summary</h2></div>
+            <div class="d-flex flex-column gap-3">
+              <div class="d-flex justify-content-between align-items-center py-2 border-bottom" style="border-color:var(--line)!important;">
+                <span class="small text-secondary">Full name</span>
+                <span class="fw-semibold">{{ student.first_name }} {{ student.last_name }}</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center py-2 border-bottom" style="border-color:var(--line)!important;">
+                <span class="small text-secondary">Matric number</span>
+                <span class="cell-id">{{ student.reg_id }}</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center py-2 border-bottom" style="border-color:var(--line)!important;">
+                <span class="small text-secondary">Programme</span>
+                <span class="fw-semibold">{{ student.programme|default:"—" }}</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center py-2 border-bottom" style="border-color:var(--line)!important;">
+                <span class="small text-secondary">CGPA</span>
+                <span class="cell-id">{{ cgpa|floatformat:2 }} / 5.00</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center py-2">
+                <span class="small text-secondary">Class of degree</span>
+                <span class="fw-semibold">{{ standing }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- ======= TAB: NOTIFICATIONS ======= -->
+      {% if active_tab == 'notifications' %}
+      <div class="page-title-row">
+        <div>
+          <div class="breadcrumb-mono mb-1">Student / Notifications</div>
+          <h1>Notifications</h1>
+          <div class="sub">System alerts and academic updates</div>
+        </div>
+      </div>
+      <div class="panel">
+        {% for log in recent_activities %}
+        <div class="activity-item">
+          <div class="activity-icon" style="background:var(--info-tint); color:var(--info);"><i class="bi bi-clock-history"></i></div>
+          <div>
+            <div class="activity-text fw-semibold">{{ log.action }}</div>
+            <div class="activity-time">{{ log.timestamp|timesince }} ago · {{ log.timestamp|date:"d M Y, H:i" }}</div>
+          </div>
+        </div>
+        {% empty %}
+        <div class="text-center text-secondary py-5">
+          <i class="bi bi-bell-slash fs-1 d-block mb-3 opacity-25"></i>
+          No notifications yet.
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- ======= TAB: SETTINGS ======= -->
+      {% if active_tab == 'settings' %}
+      <div class="page-title-row">
+        <div>
+          <div class="breadcrumb-mono mb-1">Student / Settings</div>
+          <h1>Account settings</h1>
+          <div class="sub">Manage your security preferences</div>
+        </div>
+      </div>
+      <div class="row g-4">
+        <div class="col-lg-6">
+          <div class="panel">
+            <div class="panel-header"><h2>Change password</h2></div>
+            <form method="POST" action="?tab=settings">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="change_password">
+              <div class="mb-3">
+                <label class="form-label small fw-semibold">Current password</label>
+                <input type="password" name="oldPassword" class="form-control" required placeholder="Enter current password">
+              </div>
+              <div class="mb-3">
+                <label class="form-label small fw-semibold">New password</label>
+                <input type="password" name="newPassword" class="form-control" required placeholder="Minimum 8 characters">
+              </div>
+              <div class="mb-4">
+                <label class="form-label small fw-semibold">Confirm new password</label>
+                <input type="password" name="confirmPassword" class="form-control" required placeholder="Re-enter new password">
+              </div>
+              <button type="submit" class="btn btn-arms-primary btn-sm">Update password</button>
+            </form>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="panel">
+            <div class="panel-header"><h2>Account info</h2></div>
+            <div class="d-flex flex-column gap-2 small">
+              <div class="d-flex justify-content-between py-2 border-bottom" style="border-color:var(--line)!important;"><span class="text-secondary">Username</span><span class="cell-id">{{ student.username }}</span></div>
+              <div class="d-flex justify-content-between py-2 border-bottom" style="border-color:var(--line)!important;"><span class="text-secondary">Email</span><span>{{ student.email }}</span></div>
+              <div class="d-flex justify-content-between py-2 border-bottom" style="border-color:var(--line)!important;"><span class="text-secondary">Role</span><span class="fw-semibold">Student</span></div>
+              <div class="d-flex justify-content-between py-2"><span class="text-secondary">Status</span><span class="badge-status {% if student.status == 'Active' %}success{% elif student.status == 'Probation' %}warning{% else %}danger{% endif %}">{{ student.status }}</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+    </main>
+  </div>
+</div>
+
+<!-- Course Registration Modal -->
+<div class="modal fade" id="registerCourseModal" tabindex="-1" aria-labelledby="registerCourseModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content" style="background-color: var(--card); border: 1px solid var(--line); color: var(--ink);">
+      <div class="modal-header" style="border-bottom: 1px solid var(--line);">
+        <h5 class="modal-title" id="registerCourseModalLabel">Course Registration — 2nd Semester</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: var(--close-btn-filter);"></button>
+      </div>
+      <form method="POST" action="{% url 'course_registration' %}">
+        {% csrf_token %}
+        <div class="modal-body">
+          <p class="text-secondary small mb-4">Select the courses you want to register for this semester. Once submitted, they will await approval by the Registrar's office.</p>
+          <div class="table-responsive">
+            <table class="table table-arms">
+              <thead>
+                <tr><th width="40">Select</th><th>Code</th><th>Course Title</th><th>Units</th><th>Lecturer</th></tr>
+              </thead>
+              <tbody>
+                {% for course in available_courses %}
+                <tr>
+                  <td><input class="form-check-input" type="checkbox" name="courses" value="{{ course.id }}" id="course_{{ course.id }}"></td>
+                  <td class="cell-id">{{ course.code }}</td>
+                  <td>{{ course.title }}</td>
+                  <td>{{ course.units }}</td>
+                  <td>{{ course.lecturer.first_name }} {{ course.lecturer.last_name|default:"—" }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" class="text-center py-3 text-secondary">All available department courses for this semester are already registered.</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer" style="border-top: 1px solid var(--line);">
+          <button type="button" class="btn btn-arms-outline btn-sm" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-arms-primary btn-sm" {% if not available_courses %}disabled{% endif %}>Register Selected Courses</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="/static/vendor/bootstrap.bundle.min.js"></script>
+<script src="/static/js/dashboard.js"></script>
+</body>
+</html>

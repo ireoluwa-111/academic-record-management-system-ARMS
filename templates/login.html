@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login — ARMS</title>
+<link href="/static/vendor/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="/static/vendor/bootstrap-icons/bootstrap-icons.css">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<div class="auth-shell">
+  <aside class="auth-aside d-none d-lg-flex">
+    <a href="index.html" class="arms-brand position-relative">
+      <span class="arms-brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 3L2 8l10 5 10-5-10-5z" stroke="#C9A227" stroke-width="1.4" stroke-linejoin="round"/>
+          <path d="M6 11.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5" stroke="#C9A227" stroke-width="1.4" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <span class="arms-brand-text">
+        <span class="name" style="color:#fff;">ARMS</span>
+        <span class="tag">Academic Records</span>
+      </span>
+    </a>
+
+    <div class="position-relative">
+      <p class="auth-quote">"One verified record, from matriculation to transcript — that's the whole idea."</p>
+      <div class="d-flex align-items-center gap-3 mt-4">
+        <div class="testimonial-avatar">RG</div>
+        <div>
+          <div class="fw-semibold text-white small">Office of the Registrar</div>
+          <div class="small" style="color:rgba(255,255,255,0.55)">University Academic Registry</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="small position-relative" style="color:rgba(255,255,255,0.45)">&copy; 2026 ARMS · Secured with JWT &amp; role-based access control</div>
+  </aside>
+
+  <main class="auth-main">
+    <div class="auth-card">
+      <div class="d-lg-none arms-brand mb-4 justify-content-center">
+        <span class="arms-brand-mark">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 3L2 8l10 5 10-5-10-5z" stroke="#C9A227" stroke-width="1.4" stroke-linejoin="round"/>
+            <path d="M6 11.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5" stroke="#C9A227" stroke-width="1.4" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span class="arms-brand-text"><span class="name">ARMS</span></span>
+      </div>
+
+      <span class="eyebrow">Welcome back</span>
+      <h1 class="h3 mt-2 mb-1">Sign in to your account</h1>
+      <p class="text-secondary mb-4">Access your records, courses and dashboard.</p>
+
+      {% if error %}
+      <div class="alert alert-danger py-2 mb-3" role="alert" style="font-size:0.85rem; border-radius:6px;">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ error }}
+      </div>
+      {% endif %}
+
+      <form method="POST" action="{% url 'login' %}" novalidate>
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="loginId" class="form-label">Matric / Staff ID or email</label>
+          <input type="text" id="loginId" name="loginId" class="form-control" placeholder="e.g. CSC/2022/0417 or you@university.edu" required>
+        </div>
+        <div class="mb-2">
+          <label for="loginPassword" class="form-label">Password</label>
+          <div class="input-group">
+            <input type="password" id="loginPassword" name="loginPassword" class="form-control border-end-0" placeholder="Enter your password" required>
+            <button class="btn btn-outline-secondary border-start-0" type="button" data-toggle-password="loginPassword" style="border-color:var(--line);">
+              <i class="bi bi-eye"></i>
+            </button>
+          </div>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="rememberMe">
+            <label class="form-check-label small" for="rememberMe">Remember me</label>
+          </div>
+          <a href="#" class="small fw-semibold">Forgot password?</a>
+        </div>
+        <button type="submit" class="btn btn-arms-primary w-100">Sign in</button>
+      </form>
+
+      <div class="divider-or">or continue as</div>
+      <div class="row g-2 mb-4">
+        <div class="col-6">
+          <a href="{% url 'login' %}?demo=student" class="quick-action py-2"><i class="bi bi-mortarboard" style="font-size:1.1rem;margin-bottom:0.2rem;"></i><span>Student demo</span></a>
+        </div>
+        <div class="col-6">
+          <a href="{% url 'login' %}?demo=registrar" class="quick-action py-2"><i class="bi bi-building" style="font-size:1.1rem;margin-bottom:0.2rem;"></i><span>Registrar demo</span></a>
+        </div>
+      </div>
+
+      <p class="text-center small text-secondary mb-0">Don't have an account? <a href="{% url 'register' %}" class="fw-semibold">Create one</a></p>
+    </div>
+  </main>
+</div>
+
+<script src="/static/vendor/bootstrap.bundle.min.js"></script>
+<script src="/static/js/main.js"></script>
+</body>
+</html>

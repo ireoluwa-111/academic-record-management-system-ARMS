@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Official Transcript — {{ student.first_name }} {{ student.last_name }}</title>
+<link href="/static/vendor/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0F172A;
+    --gold: #C9A227;
+    --gold-deep: #B58F1D;
+    --ink: #1E293B;
+    --line: #E2E8F0;
+    --bg-paper: #FFFFFF;
+  }
+  body {
+    background-color: #F8FAFC;
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    padding: 40px 0;
+  }
+  .transcript-sheet {
+    background-color: var(--bg-paper);
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 60px;
+    border: 1px solid var(--line);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+    position: relative;
+  }
+  /* Decorative watermark style header */
+  .watermark-seal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .transcript-header {
+    text-align: center;
+    border-bottom: 2px solid var(--gold);
+    padding-bottom: 25px;
+    margin-bottom: 30px;
+    position: relative;
+    z-index: 1;
+  }
+  .institution-name {
+    font-family: 'Lora', serif;
+    font-weight: 700;
+    font-size: 1.8rem;
+    color: var(--navy);
+    letter-spacing: -0.5px;
+  }
+  .document-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--gold-deep);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 5px;
+  }
+  .student-meta {
+    background-color: #F8FAFC;
+    border: 1px solid var(--line);
+    padding: 20px 25px;
+    border-radius: 6px;
+    margin-bottom: 40px;
+    font-size: 0.9rem;
+    position: relative;
+    z-index: 1;
+  }
+  .meta-title {
+    color: #64748B;
+    font-weight: 500;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+  }
+  .meta-val {
+    color: var(--navy);
+    font-weight: 600;
+  }
+  .semester-card {
+    margin-bottom: 35px;
+    position: relative;
+    z-index: 1;
+  }
+  .semester-title {
+    font-family: 'Lora', serif;
+    font-weight: 600;
+    font-size: 1.15rem;
+    color: var(--navy);
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 8px;
+    margin-bottom: 15px;
+  }
+  .table-transcript th {
+    background-color: #F8FAFC !important;
+    border-bottom: 1px solid var(--line);
+    color: #475569;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 10px 12px;
+  }
+  .table-transcript td {
+    padding: 12px;
+    font-size: 0.85rem;
+    border-bottom: 1px solid #F1F5F9;
+  }
+  .code-col {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    color: var(--navy);
+  }
+  .grade-col {
+    font-weight: 700;
+    color: var(--gold-deep);
+  }
+  .semester-summary {
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #475569;
+    padding: 8px 12px;
+    background-color: #F8FAFC;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+  }
+  .summary-badge {
+    background-color: var(--navy);
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-weight: 700;
+  }
+  .cumulative-panel {
+    background-color: var(--navy);
+    color: #fff;
+    padding: 25px;
+    border-radius: 6px;
+    margin-top: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+  .cgpa-val {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .btn-print {
+    background-color: var(--navy);
+    color: #fff;
+    border: none;
+    padding: 8px 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    border-radius: 4px;
+    transition: all 0.2s;
+  }
+  .btn-print:hover {
+    background-color: var(--gold-deep);
+    color: #fff;
+  }
+  @media print {
+    body {
+      background-color: #fff;
+      padding: 0;
+    }
+    .transcript-sheet {
+      border: none;
+      box-shadow: none;
+      padding: 0;
+    }
+    .btn-print {
+      display: none !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="container text-end mb-3 max-width" style="max-width: 900px;">
+  <button onclick="window.print()" class="btn-print"><i class="bi bi-printer me-2"></i>Print Transcript</button>
+</div>
+
+<div class="transcript-sheet">
+  <!-- Watermark logo -->
+  <div class="watermark-seal">
+    <svg width="400" height="400" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 3L2 8l10 5 10-5-10-5z" stroke="currentColor" stroke-width="0.8" stroke-linejoin="round"/>
+      <path d="M6 11.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5" stroke="currentColor" stroke-width="0.8" stroke-linejoin="round"/>
+    </svg>
+  </div>
+
+  <header class="transcript-header">
+    <div class="institution-name">UNIVERSITY OF EXCELLENCE</div>
+    <div class="document-title">Official Academic Transcript</div>
+    <div class="text-secondary small mt-1">Office of the Registrar · Academic Records Division</div>
+  </header>
+
+  <section class="student-meta row g-3">
+    <div class="col-6 col-md-3">
+      <div class="meta-title">Student Name</div>
+      <div class="meta-val">{{ student.first_name }} {{ student.last_name }}</div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="meta-title">Matriculation Number</div>
+      <div class="meta-val">{{ student.reg_id }}</div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="meta-title">Department</div>
+      <div class="meta-val">{{ student.department.name }}</div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="meta-title">Programme of Study</div>
+      <div class="meta-val">{{ student.programme }}</div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="meta-title">Current Level</div>
+      <div class="meta-val">{{ student.level }} Level</div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="meta-title">Date of Print</div>
+      <div class="meta-val">{% now "F j, Y" %}</div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="meta-title">Status</div>
+      <div class="meta-val">{{ student.status }}</div>
+    </div>
+  </section>
+
+  <main>
+    {% for sem in semesters %}
+    <div class="semester-card">
+      <h3 class="semester-title">{{ sem.session }} — {{ sem.semester }}</h3>
+      <div class="table-responsive">
+        <table class="table table-transcript">
+          <thead>
+            <tr>
+              <th width="15%">Course Code</th>
+              <th width="55%">Course Title</th>
+              <th width="10%">Units</th>
+              <th width="10%">Score</th>
+              <th width="10%">Grade</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for enrollment in sem.enrollments %}
+            <tr>
+              <td class="code-col">{{ enrollment.course.code }}</td>
+              <td>{{ enrollment.course.title }}</td>
+              <td>{{ enrollment.course.units }}</td>
+              <td>{{ enrollment.score }}</td>
+              <td class="grade-col">{{ enrollment.grade }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="semester-summary">
+        <span>Units Taken: <strong>{{ sem.units }}</strong></span>
+        <span>Semester GPA: <span class="summary-badge">{{ sem.gpa|floatformat:2 }}</span></span>
+      </div>
+    </div>
+    {% empty %}
+    <p class="text-center text-secondary py-5">No academic records found for this student.</p>
+    {% endfor %}
+
+    <div class="cumulative-panel">
+      <div>
+        <h4 class="mb-1 text-white font-serif" style="font-family:'Lora', serif;">Cumulative Performance Summary</h4>
+        <p class="mb-0 text-white-50 small">Computed across all semesters of registered and completed course units.</p>
+      </div>
+      <div class="text-end">
+        <div class="small text-white-50 text-uppercase tracking-wider" style="font-size: 0.7rem; letter-spacing: 1px;">Cumulative GPA</div>
+        <div class="cgpa-val">{{ cgpa|floatformat:2 }}</div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="mt-5 pt-4 text-center text-secondary small border-top" style="border-color: var(--line) !important; font-size: 0.75rem;">
+    <p class="mb-1">This document is an official record issued by the University Registry.</p>
+    <p class="mb-0">Secure Verification Code: ARMS-{{ student.id }}-{{ student.reg_id|slice:":3" }}-VERIFIED</p>
+  </footer>
+</div>
+
+</body>
+</html>

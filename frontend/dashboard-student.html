@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Dashboard — ARMS</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body class="dash-body">
+
+<div class="dash-shell">
+
+  <!-- ============================== SIDEBAR ============================== -->
+  <aside class="dash-sidebar">
+    <a href="index.html" class="side-brand">
+      <span class="side-mark">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 3L2 8l10 5 10-5-10-5z" stroke="#C9A227" stroke-width="1.4" stroke-linejoin="round"/>
+          <path d="M6 11.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5" stroke="#C9A227" stroke-width="1.4" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <span><span class="name d-block">ARMS</span><span class="tag">Student Portal</span></span>
+    </a>
+
+    <div class="side-section-label">Overview</div>
+    <a href="dashboard-student.html" class="nav-link active"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+    <a href="#" class="nav-link"><i class="bi bi-person-vcard"></i> My Profile</a>
+
+    <div class="side-section-label">Academics</div>
+    <a href="#" class="nav-link"><i class="bi bi-pencil-square"></i> Course Registration</a>
+    <a href="#" class="nav-link"><i class="bi bi-journal-text"></i> My Courses</a>
+    <a href="#" class="nav-link"><i class="bi bi-bar-chart-line"></i> Results &amp; GPA</a>
+    <a href="#" class="nav-link"><i class="bi bi-file-earmark-pdf"></i> Transcript <span class="nav-badge">PDF</span></a>
+
+    <div class="side-section-label">Account</div>
+    <a href="#" class="nav-link"><i class="bi bi-bell"></i> Notifications</a>
+    <a href="#" class="nav-link"><i class="bi bi-gear"></i> Settings</a>
+
+    <div class="side-footer">
+      <a href="login.html" class="nav-link px-0"><i class="bi bi-box-arrow-left"></i> Sign out</a>
+    </div>
+  </aside>
+
+  <div class="dash-overlay"></div>
+
+  <!-- ============================== MAIN ============================== -->
+  <div class="dash-main">
+    <header class="dash-topbar">
+      <button class="sidebar-toggle"><i class="bi bi-list fs-5"></i></button>
+      <div class="dash-search">
+        <i class="bi bi-search"></i>
+        <input type="text" placeholder="Search courses, results…">
+      </div>
+      <div class="topbar-right">
+        <div class="dropdown">
+          <button class="icon-btn" data-bs-toggle="dropdown"><i class="bi bi-bell"></i><span class="dot"></span></button>
+          <div class="dropdown-menu dropdown-menu-end notif-dropdown p-0">
+            <div class="px-3 py-2 fw-semibold small border-bottom" style="border-color:var(--line)!important;">Notifications</div>
+            <div class="notif-item"><span class="dot-unread"></span><div><div class="notif-title">Result published</div><div class="notif-sub">CSC 305 — Database Systems · 2nd Semester</div></div></div>
+            <div class="notif-item"><span class="dot-unread"></span><div><div class="notif-title">Registration window opens</div><div class="notif-sub">2026/2027 — Harmattan semester · Opens Jul 1</div></div></div>
+            <div class="notif-item"><div><div class="notif-title">Transcript request approved</div><div class="notif-sub">Ref TR-7E29-4401 is ready to download</div></div></div>
+          </div>
+        </div>
+        <div class="dropdown">
+          <div class="profile-trigger" data-bs-toggle="dropdown">
+            <div class="profile-avatar">AO</div>
+            <div class="d-none d-md-block">
+              <div class="pname">Adaeze Okoro</div>
+              <div class="prole">Student · CSC/2022/0417</div>
+            </div>
+            <i class="bi bi-chevron-down small d-none d-md-block"></i>
+          </div>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>My Profile</a></li>
+            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Settings</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="login.html"><i class="bi bi-box-arrow-left me-2"></i>Sign out</a></li>
+          </ul>
+        </div>
+      </div>
+    </header>
+
+    <main class="dash-content">
+      <div class="page-title-row">
+        <div>
+          <div class="breadcrumb-mono mb-1">Student / Dashboard</div>
+          <h1>Welcome back, Adaeze</h1>
+          <div class="sub">300 Level · B.Sc Computer Science · 2025/2026 session</div>
+        </div>
+        <a href="#" class="btn-arms-primary btn-sm"><i class="bi bi-file-earmark-pdf me-1"></i> Download transcript</a>
+      </div>
+
+      <!-- Stat cards -->
+      <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+          <div class="dstat-card">
+            <div class="dstat-icon tone-navy"><i class="bi bi-bar-chart-line"></i></div>
+            <div><div class="num">4.62</div><div class="label">Cumulative GPA</div><div class="trend up"><i class="bi bi-arrow-up-short"></i>0.08 this semester</div></div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="dstat-card">
+            <div class="dstat-icon tone-gold"><i class="bi bi-journal-text"></i></div>
+            <div><div class="num">6</div><div class="label">Registered courses</div><div class="trend">18 units</div></div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="dstat-card">
+            <div class="dstat-icon tone-success"><i class="bi bi-check2-circle"></i></div>
+            <div><div class="num">118</div><div class="label">Units completed</div><div class="trend up"><i class="bi bi-arrow-up-short"></i>of 162 required</div></div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="dstat-card">
+            <div class="dstat-icon tone-info"><i class="bi bi-patch-check"></i></div>
+            <div><div class="num">First Class</div><div class="label">Academic standing</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-3 mb-4">
+        <!-- GPA trend -->
+        <div class="col-lg-8">
+          <div class="panel h-100">
+            <div class="panel-header">
+              <h2>GPA trend by semester</h2>
+              <a href="#" class="panel-link">View results</a>
+            </div>
+            <div class="chart-placeholder">
+              <span class="chart-placeholder-label">GPA (0–5.0 scale)</span>
+              <div class="bar" data-height="62"></div>
+              <div class="bar" data-height="70"></div>
+              <div class="bar" data-height="66"></div>
+              <div class="bar" data-height="78"></div>
+              <div class="bar" data-height="84"></div>
+              <div class="bar" data-height="80"></div>
+              <div class="bar" data-height="92"></div>
+            </div>
+          </div>
+        </div>
+        <!-- Current GPA ring -->
+        <div class="col-lg-4">
+          <div class="panel h-100 d-flex flex-column align-items-center justify-content-center text-center">
+            <div class="gpa-ring" data-value="92">
+              <svg width="92" height="92" viewBox="0 0 92 92">
+                <circle cx="46" cy="46" r="40" fill="none" stroke="var(--line)" stroke-width="8"/>
+                <circle class="ring-progress" cx="46" cy="46" r="40" fill="none" stroke="var(--gold)" stroke-width="8" stroke-linecap="round"/>
+              </svg>
+              <div class="gpa-val">4.62</div>
+            </div>
+            <div class="mt-3 fw-semibold" style="color:var(--ink)">Current CGPA</div>
+            <div class="small text-secondary">First Class Honours band</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-3">
+        <!-- Registered courses table -->
+        <div class="col-lg-8">
+          <div class="panel">
+            <div class="panel-header">
+              <h2>Registered courses — 2nd semester</h2>
+              <a href="#" class="panel-link">Manage registration</a>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-arms">
+                <thead><tr><th>Code</th><th>Course title</th><th>Units</th><th>Lecturer</th><th>Status</th></tr></thead>
+                <tbody>
+                  <tr><td class="cell-id">CSC 301</td><td>Data Structures &amp; Algorithms</td><td>3</td><td>Dr. T. Okafor</td><td><span class="badge-status success">Enrolled</span></td></tr>
+                  <tr><td class="cell-id">CSC 305</td><td>Database Systems</td><td>3</td><td>Prof. A. Lawal</td><td><span class="badge-status success">Enrolled</span></td></tr>
+                  <tr><td class="cell-id">CSC 311</td><td>Operating Systems</td><td>3</td><td>Dr. K. Eze</td><td><span class="badge-status success">Enrolled</span></td></tr>
+                  <tr><td class="cell-id">MTH 302</td><td>Numerical Methods</td><td>3</td><td>Dr. F. Bello</td><td><span class="badge-status warning">Pending approval</span></td></tr>
+                  <tr><td class="cell-id">GST 301</td><td>Entrepreneurship Studies</td><td>2</td><td>Mrs. C. Aniagu</td><td><span class="badge-status success">Enrolled</span></td></tr>
+                  <tr><td class="cell-id">CSC 313</td><td>Software Engineering</td><td>3</td><td>Dr. T. Okafor</td><td><span class="badge-status success">Enrolled</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent activity -->
+        <div class="col-lg-4">
+          <div class="panel">
+            <div class="panel-header"><h2>Recent activity</h2></div>
+            <div class="activity-item">
+              <div class="activity-icon" style="background:var(--success-tint); color:var(--success);"><i class="bi bi-bar-chart-line"></i></div>
+              <div><div class="activity-text">Result published for CSC 305</div><div class="activity-time">2 hours ago</div></div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon" style="background:var(--gold-tint); color:var(--gold-deep);"><i class="bi bi-pencil-square"></i></div>
+              <div><div class="activity-text">Registered for MTH 302</div><div class="activity-time">Yesterday</div></div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon" style="background:var(--info-tint); color:var(--info);"><i class="bi bi-file-earmark-pdf"></i></div>
+              <div><div class="activity-text">Transcript TR-7E29-4401 generated</div><div class="activity-time">3 days ago</div></div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon" style="background:var(--paper-tint); color:var(--ink);"><i class="bi bi-person-vcard"></i></div>
+              <div><div class="activity-text">Profile details updated</div><div class="activity-time">1 week ago</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/dashboard.js"></script>
+</body>
+</html>
